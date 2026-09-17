@@ -1,0 +1,8 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit real values.
+
+aws_region  = "us-east-1"
+aws_profile = "test"
+
+# Get yours with: curl -s ifconfig.me
+my_ip_cidr = "1.2.3.4/32"

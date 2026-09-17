@@ -1,0 +1,7 @@
+# Local state + secrets — never commit these
+# (.terraform.lock.hcl IS committed on purpose — pins provider versions)
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+*.pem
