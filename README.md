@@ -10,20 +10,31 @@ Hands-on: deploy a VPC + 1 EC2 VM with Terraform, test internet access, tear it 
 - [`docs/04-aws-console-clickops.md`](docs/04-aws-console-clickops.md) — same environment, built by hand in the AWS console (for comparison)
 - [`terraform/`](terraform/) — the actual infra code (VPC, subnet, IGW, security group, EC2)
 
-## Prerequisites (already installed on this PC)
+## Prerequisites
 
-- Terraform CLI ✅ (`terraform -version`)
-- AWS CLI ✅ (`aws --version`)
-- You manually add credentials under profile `test` in `~/.aws/credentials` (see doc 03)
+Works on **macOS, Windows 11, and Linux**.
+
+- Terraform CLI — `terraform -version` (macOS: `brew install terraform`; Windows: `winget install Hashicorp.Terraform`)
+- AWS CLI v2 — `aws --version` (macOS: `brew install awscli`; Windows: `winget install Amazon.AWSCLI`)
+- SSH client — built in on both (macOS: `ssh`; Windows 11: OpenSSH client ships with PowerShell by default)
+- You manually add credentials under profile `test` in your AWS credentials file (see [doc 03](docs/03-aws-cli-profiles.md) — path differs by OS)
 
 ## Quick start
 
 ```bash
 cd terraform
-cp terraform.tfvars.example terraform.tfvars
-# edit terraform.tfvars: set my_ip_cidr (get it via: curl -s ifconfig.me)
+cp terraform.tfvars.example terraform.tfvars      # Windows PowerShell: Copy-Item terraform.tfvars.example terraform.tfvars
+# edit terraform.tfvars: set my_ip_cidr (get it via: curl -s ifconfig.me   — works on both bash and PowerShell)
+```
 
-export AWS_PROFILE=test
+Set the AWS profile for this terminal session:
+
+| Shell | Command |
+|---|---|
+| bash/zsh (macOS/Linux) | `export AWS_PROFILE=test` |
+| PowerShell (Windows 11) | `$env:AWS_PROFILE = "test"` |
+
+```bash
 terraform init
 terraform plan
 terraform apply       # type "yes"
@@ -32,9 +43,13 @@ terraform apply       # type "yes"
 ## Test internet access
 
 ```bash
-terraform output ssh_command   # copy the command it prints
-$(terraform output -raw ssh_command)
-# once inside the VM:
+terraform output -raw ssh_command
+```
+
+Copy the printed command and run it (identical on macOS/Linux/Windows 11 — PowerShell has a built-in OpenSSH client). If Windows refuses the key with an "UNPROTECTED PRIVATE KEY FILE" error, see the `icacls` fix in [doc 04](docs/04-aws-console-clickops.md#6-key-pair).
+
+Once inside the VM:
+```bash
 curl -s https://checkip.amazonaws.com   # should print the VM's public IP = internet works
 ```
 

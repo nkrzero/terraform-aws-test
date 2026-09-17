@@ -101,11 +101,19 @@ Associate it with the subnet:
 - Private key file format: `.pem`
 - Create key pair — **the browser downloads `tf-training-key.pem` automatically, this is the only time you can get it**
 
-Lock down permissions like Terraform's `file_permission = "0600"` does automatically:
+Lock down permissions like Terraform's `file_permission = "0600"` does automatically — SSH refuses to use a key file that's readable by others:
 
+**macOS/Linux:**
 ```bash
 mv ~/Downloads/tf-training-key.pem .
 chmod 600 tf-training-key.pem
+```
+
+**Windows (PowerShell)** — POSIX `chmod` doesn't exist; restrict the NTFS ACL instead:
+```powershell
+Move-Item "$env:USERPROFILE\Downloads\tf-training-key.pem" .
+icacls tf-training-key.pem /inheritance:r
+icacls tf-training-key.pem /grant:r "$env:USERNAME:(R)"
 ```
 
 ## 7. EC2 Instance
@@ -130,6 +138,8 @@ Wait ~1 min for status checks to pass, then grab the public IP from the instance
 ```bash
 ssh -i tf-training-key.pem ec2-user@<public-ip>
 ```
+
+Identical command on Windows 11 — PowerShell includes the OpenSSH client by default. If you get a "permissions are too open" / "UNPROTECTED PRIVATE KEY FILE" error, re-run the `icacls` commands above.
 
 ```bash
 curl -s https://checkip.amazonaws.com   # should print the VM's public IP = internet works

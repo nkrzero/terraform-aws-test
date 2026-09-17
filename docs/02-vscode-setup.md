@@ -4,6 +4,7 @@
    ```bash
    code --install-extension hashicorp.terraform
    ```
+   If `code` isn't recognized (Windows): re-run the VS Code installer and check "Add to PATH", or install the extension from the Extensions panel (`Ctrl+Shift+X`) instead.
 2. Install extension: **AWS Toolkit** (optional, publisher: Amazon) — helpful for browsing resources.
 3. Reload VS Code. Open the `terraform/` folder.
 4. Confirm it works: open `main.tf` → you should see syntax highlighting + autocomplete.
