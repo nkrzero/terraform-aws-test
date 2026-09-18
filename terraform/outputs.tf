@@ -7,5 +7,5 @@ output "instance_public_ip" {
 
 output "ssh_command" {
   description = "Ready-to-run SSH command"
-  value       = "ssh -i ${var.project_name}-key.pem ec2-user@${aws_instance.web.public_ip}"
+  value       = "ssh -i ${var.ssh_private_key_path} ec2-user@${aws_instance.web.public_ip}"
 }

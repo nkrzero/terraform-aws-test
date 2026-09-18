@@ -94,14 +94,23 @@ Associate it with the subnet:
 
 ## 6. Key Pair
 
-**EC2 console → Key Pairs → Create key pair**
+Two options — pick one:
 
+**A) Import your existing key (matches what the Terraform code does)**
+
+- EC2 console → Key Pairs → **Actions → Import key pair**
+- Name: `tf-training-key`
+- Public key contents: paste the contents of `~/.ssh/aws_vm.pub` (no `ssh-keygen` needed if you already have one)
+
+**B) Create a brand new one (if you don't have a key yet)**
+
+- EC2 console → Key Pairs → **Create key pair**
 - Name: `tf-training-key`
 - Key pair type: RSA
 - Private key file format: `.pem`
 - Create key pair — **the browser downloads `tf-training-key.pem` automatically, this is the only time you can get it**
 
-Lock down permissions like Terraform's `file_permission = "0600"` does automatically — SSH refuses to use a key file that's readable by others:
+If you went with B, lock down the downloaded file's permissions — SSH refuses to use a key file that's readable by others:
 
 **macOS/Linux:**
 ```bash
@@ -136,7 +145,8 @@ icacls tf-training-key.pem /grant:r "$env:USERNAME:(R)"
 Wait ~1 min for status checks to pass, then grab the public IP from the instance details page and:
 
 ```bash
-ssh -i tf-training-key.pem ec2-user@<public-ip>
+ssh -i tf-training-key.pem ec2-user@<public-ip>    # option B key
+ssh -i ~/.ssh/aws_vm ec2-user@<public-ip>          # option A (imported) key
 ```
 
 Identical command on Windows 11 — PowerShell includes the OpenSSH client by default. If you get a "permissions are too open" / "UNPROTECTED PRIVATE KEY FILE" error, re-run the `icacls` commands above.
@@ -148,7 +158,7 @@ curl -s https://checkip.amazonaws.com   # should print the VM's public IP = inte
 ## Tear down (in this order — dependencies block deletion otherwise)
 
 1. **EC2 → Instances** → select `tf-training-vm` → Instance state → Terminate instance (wait until it's fully terminated)
-2. **EC2 → Key Pairs** → select `tf-training-key` → Actions → Delete (also delete your local `.pem` file)
+2. **EC2 → Key Pairs** → select `tf-training-key` → Actions → Delete. If you used option B, also delete the local `.pem` file — if you used option A (imported), keep `~/.ssh/aws_vm`, it's your reusable key, only the AWS-side copy goes
 3. **EC2 → Security Groups** → select `tf-training-sg` → Actions → Delete security groups
 4. **VPC → Route Tables** → select `tf-training-public-rt` → Actions → Delete route table (subnet association is removed automatically)
 5. **VPC → Internet Gateways** → select `tf-training-igw` → Actions → Detach from VPC, then Actions → Delete internet gateway

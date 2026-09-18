@@ -40,3 +40,15 @@ variable "my_ip_cidr" {
   description = "Your public IP in CIDR form, e.g. 1.2.3.4/32 (used to lock down SSH). Get it: curl -s ifconfig.me"
   type        = string
 }
+
+variable "ssh_public_key_path" {
+  description = "Path to your existing SSH public key, imported as the AWS key pair. Generate one if needed: ssh-keygen -t ed25519 -f ~/.ssh/aws_vm"
+  type        = string
+  default     = "~/.ssh/aws_vm.pub"
+}
+
+variable "ssh_private_key_path" {
+  description = "Path to the matching private key (only used to print the ssh command below)"
+  type        = string
+  default     = "~/.ssh/aws_vm"
+}

@@ -17,6 +17,7 @@ Works on **macOS, Windows 11, and Linux**.
 - Terraform CLI — `terraform -version` (macOS: `brew install terraform`; Windows: `winget install Hashicorp.Terraform`)
 - AWS CLI v2 — `aws --version` (macOS: `brew install awscli`; Windows: `winget install Amazon.AWSCLI`)
 - SSH client — built in on both (macOS: `ssh`; Windows 11: OpenSSH client ships with PowerShell by default)
+- An SSH key pair at `~/.ssh/aws_vm` / `~/.ssh/aws_vm.pub` (default path — override via `ssh_public_key_path`/`ssh_private_key_path` if yours is elsewhere). No key yet? `ssh-keygen -t ed25519 -f ~/.ssh/aws_vm`
 - You manually add credentials under profile `test` in your AWS credentials file (see [doc 03](docs/03-aws-cli-profiles.md) — path differs by OS)
 
 ## Quick start
@@ -46,7 +47,7 @@ terraform apply       # type "yes"
 terraform output -raw ssh_command
 ```
 
-Copy the printed command and run it (identical on macOS/Linux/Windows 11 — PowerShell has a built-in OpenSSH client). If Windows refuses the key with an "UNPROTECTED PRIVATE KEY FILE" error, see the `icacls` fix in [doc 04](docs/04-aws-console-clickops.md#6-key-pair).
+Copy the printed command and run it (identical on macOS/Linux/Windows 11 — PowerShell has a built-in OpenSSH client). If Windows refuses your private key with an "UNPROTECTED PRIVATE KEY FILE" error, restrict its ACL with the `icacls` commands in [doc 04](docs/04-aws-console-clickops.md#6-key-pair) (same fix, any key file).
 
 Once inside the VM:
 ```bash

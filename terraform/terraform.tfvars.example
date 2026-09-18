@@ -6,3 +6,8 @@ aws_profile = "test"
 
 # Get yours with: curl -s ifconfig.me
 my_ip_cidr = "1.2.3.4/32"
+
+# Only needed if your key isn't at the default ~/.ssh/aws_vm(.pub).
+# No key yet? Generate one: ssh-keygen -t ed25519 -f ~/.ssh/aws_vm
+# ssh_public_key_path  = "~/.ssh/aws_vm.pub"
+# ssh_private_key_path = "~/.ssh/aws_vm"
